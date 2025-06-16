@@ -1,10 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAt9IJ_wC2LvsTqxLUAipxBQqjOJT0iMf0",
+    authDomain: "reiddrop-c5375.firebaseapp.com",
+    projectId: "reiddrop-c5375",
+    storageBucket: "reiddrop-c5375.firebasestorage.app",
+    messagingSenderId: "807149516597",
+    appId: "1:807149516597:web:825432d1a18986786cbe7c",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window.firebaseDB = db;
+</script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
     <title>Reid's Drop Business Plan - Editable</title>
     <style>
+        
         body {
             font-family: Arial, sans-serif;
             font-size: 11pt;
@@ -1000,18 +1019,52 @@
             }
         }
         
-        function saveChanges() {
-            const data = {};
-            const editables = document.querySelectorAll('.editable');
-            
-            editables.forEach((el, index) => {
-                const identifier = el.id || `element_${index}`;
-                data[identifier] = {
-                    innerHTML: el.innerHTML,
-                    tagName: el.tagName,
-                    className: el.className
-                };
-            });
+       async function loadSaved() {
+  const db = window.firebaseDB;
+  try {
+    const docRef = doc(db, "businessPlans", "reidsDropPlan");
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const savedContent = docSnap.data().content;
+      document.querySelectorAll('.editable').forEach((el, index) => {
+        el.innerHTML = savedContent[`section_${index}`] || el.innerHTML;
+      });
+    } else {
+      alert("No saved document found.");
+    }
+  } catch (err) {
+    alert("Error loading: " + err.message);
+  }
+}
+
+function enableRealtimeSync() {
+  const db = window.firebaseDB;
+  const docRef = doc(db, "businessPlans", "reidsDropPlan");
+
+  onSnapshot(docRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const savedContent = docSnap.data().content;
+      document.querySelectorAll('.editable').forEach((el, index) => {
+        el.innerHTML = savedContent[`section_${index}`] || el.innerHTML;
+      });
+      console.log("Live update received.");
+    }
+  });
+}
+
+function startAutoSave(intervalMs = 15000) {
+  setInterval(() => {
+    saveChanges();
+    console.log("Autosaved at", new Date().toLocaleTimeString());
+  }, intervalMs);
+}
+
+
+window.addEventListener('load', () => {
+  enableRealtimeSync();
+  startAutoSave();
+});
             
             const saveData = {
                 data: data,
@@ -1019,7 +1072,7 @@
                 version: '2.0',
                 editMode: editMode
             };
-            
+
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(saveData));
                 showNotification('💾 Changes saved successfully!', 'success');
@@ -1027,8 +1080,7 @@
                 showNotification('❌ Error saving changes. Storage may be full.', 'error');
                 console.error('Save error:', error);
             }
-        }
-        
+
         function loadSaved() {
             const saved = localStorage.getItem(STORAGE_KEY);
             if (!saved) {
@@ -1178,18 +1230,24 @@
             }
         }
         
-        function saveChanges() {
-            const data = {};
-            const editables = document.querySelectorAll('.editable');
-            
-            editables.forEach((el, index) => {
-                const identifier = el.id || el.className + '_' + index;
-                data[identifier] = {
-                    innerHTML: el.innerHTML,
-                    tagName: el.tagName,
-                    className: el.className
-                };
-            });
+        async function saveChanges() {
+  const db = window.firebaseDB;
+  const content = {};
+
+  document.querySelectorAll('.editable').forEach((el, index) => {
+    content[`section_${index}`] = el.innerHTML;
+  });
+
+  try {
+    await setDoc(doc(db, "businessPlans", "reidsDropPlan"), {
+      updated: new Date().toISOString(),
+      content
+    });
+    alert("Saved to cloud!");
+  } catch (err) {
+    alert("Error saving: " + err.message);
+  }
+}
             
             const saveData = {
                 data: data,
@@ -1355,7 +1413,6 @@
                 }
             }
         });
-    }     
     </script>
 </body>
 </html>
