@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reid's Drop Business Plan - Editable</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 11pt;
+            line-height: 1.5;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 1in;
+            color: #333;
+        }
+        
+        .editable {
+            border: 1px dashed transparent;
+            padding: 4px;
+            margin: 2px 0;
+            transition: all 0.3s ease;
+            min-height: 20px;
+            position: relative;
+        }
+        
+        .editable:hover {
+            border-color: #0066cc;
+            background-color: rgba(0, 102, 204, 0.05);
+        }
+        
+        .editable:focus {
+            outline: 2px solid #0066cc;
+            background-color: rgba(0, 102, 204, 0.1);
+            border-color: #0066cc;
+        }
+        
+        .editable[contenteditable="true"] {
+            cursor: text;
+        }
+        
+        .editable[contenteditable="false"] {
+            cursor: default;
+        }
+        
+        .edit-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border: 2px solid #0066cc;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1000;
+            max-width: 250px;
+        }
+        
+        .edit-controls button {
+            background: #0066cc;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            margin: 2px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 10pt;
+            width: 100%;
+            margin-bottom: 5px;
+        }
+        
+        .edit-controls button:hover {
+            background: #0052a3;
+        }
+        
+        .edit-controls button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .status {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 5px;
+            padding: 5px;
+            background: #f5f5f5;
+            border-radius: 3px;
+        }
+        
+        .instructions {
+            background: #e8f4f8;
+            border: 1px solid #b3d9e6;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 20px 0;
+            font-size: 10pt;
+        }
+        
+        .instructions h4 {
+            margin-top: 0;
+            color: #0066cc;
+        }
+        
+        .instructions ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .instructions li {
+            margin: 5px 0;
+        }
+        
+        h1 {
+            color: #0066cc;
+            font-size: 18pt;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        
+        h2 {
+            color: #0066cc;
+            font-size: 14pt;
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+        
+        h3 {
+            color: #0066cc;
+            font-size: 12pt;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .toc {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #0066cc;
+            margin: 30px 0;
+        }
+        
+        .toc a {
+            color: #0066cc;
+            text-decoration: none;
+            display: block;
+            padding: 5px 0;
+        }
+        
+        .toc a:hover {
+            text-decoration: underline;
+        }
+        
+        .indent-1 {
+            margin-left: 20px;
+        }
+        
+        .indent-2 {
+            margin-left: 40px;
+        }
+        
+        .indent-3 {
+            margin-left: 60px;
+        }
+        
+        ul {
+            margin: 10px 0;
+        }
+        
+        li {
+            margin: 5px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            color: #0066cc;
+        }
+        
+        .company-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 2px solid #0066cc;
+            background-color: #f8f9fa;
+        }
+        
+        .motto {
+            font-style: italic;
+            color: #666;
+            font-size: 12pt;
+        }
+        
+        .section {
+            margin: 30px 0;
+            page-break-inside: avoid;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-size: 11pt;
+            max-width: 300px;
+            word-wrap: break-word;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .notification.success { background: #4CAF50; color: white; }
+        .notification.error { background: #f44336; color: white; }
+        .notification.warning { background: #ff9800; color: white; }
+        .notification.info { background: #2196F3; color: white; }
+        
+        .split-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="edit-controls">
+        <button onclick="toggleEdit()">Toggle Edit Mode</button>
+        <button onclick="saveChanges()">Save Changes</button>
+        <button onclick="loadSaved()">Load Saved</button>
+        <button onclick="exportHTML()">Export HTML</button>
+        <button onclick="printDocument()">Print/PDF</button>
+        <div class="status" id="status">Edit mode: OFF</div>
+    </div>
+
+    <div class="instructions">
+        <h4>📝 How to Edit and Save This Document</h4>
+        <ol>
+            <li><strong>Enable Editing:</strong> Click "Toggle Edit Mode" to make all text editable</li>
+            <li><strong>Edit Content:</strong> Click on any text to edit it directly in the browser</li>
+            <li><strong>Save Changes:</strong> Click "Save Changes" to store your edits locally</li>
+            <li><strong>Export:</strong> Click "Export HTML" to download the edited document</li>
+            <li><strong>Print/PDF:</strong> Use "Print/PDF" to create a PDF version</li>
+        </ol>
+        
+        <h4>💾 Saving Your Work</h4>
+        <p><strong>Method 1 - Export HTML File:</strong></p>
+        <ol>
+            <li>Click "Export HTML" button</li>
+            <li>Save the downloaded file to your computer</li>
+            <li>Open the file in any web browser to continue editing</li>
+        </ol>
+        
+        <p><strong>Method 2 - Browser Storage (Temporary):</strong></p>
+        <ol>
+            <li>Use "Save Changes" for temporary storage</li>
+            <li>Use "Load Saved" to restore your work</li>
+            <li><em>Note: This only works in the same browser and is cleared when you clear browser data</em></li>
+        </ol>
+        
+        <h4>📤 Sharing Your Edited Document</h4>
+        <ol>
+            <li>Export the HTML file using "Export HTML"</li>
+            <li>Email the file or upload to cloud storage</li>
+            <li>Recipients can open it in any web browser</li>
+            <li>For collaboration, use the same export/import process</li>
+        </ol>
+    </div>
+
+    <div class="company-header editable">
+        <h1 style="margin: 0; border: none; padding: 0;">BUSINESS PLAN</h1>
+        <h2 style="margin: 10px 0; color: #0066cc;">Reid's Drop</h2>
+        <p class="motto">"Reid's Drop - Beauty Doesn't Ask for Attention"</p>
+        <p><strong>Umbrella Company:</strong> Tui & Tide Beverages LTD</p>
+    </div>
+
+    <div class="toc editable">
+        <h2 style="margin-top: 0; color: #0066cc;">TABLE OF CONTENTS</h2>
+        <a href="#executive-summary">1. Executive Summary</a>
+        <div class="indent-1">
+            <a href="#business-overview">1.1 Business Overview</a>
+            <a href="#key-personnel">1.2 Key Personnel</a>
+            <a href="#mission-vision">1.3 Mission & Vision</a>
+            <a href="#selling-positions">1.4 Potential Selling Positions</a>
+            <a href="#target-market">1.5 Target Market</a>
+        </div>
+        <a href="#company-description">2. Company Description</a>
+        <div class="indent-1">
+            <a href="#legal-structure">2.1 Legal Structure</a>
+            <a href="#business-stage">2.2 Current Business Stage</a>
+            <a href="#unique-value">2.3 Unique Value Proposition</a>
+        </div>
+        <a href="#market-research">3. Market Research</a>
+        <div class="indent-1">
+            <a href="#manufacturing-partners">3.1 Potential Manufacturing Partners</a>
+            <a href="#industry-overview">3.2 Industry Overview</a>
+            <a href="#competitive-analysis">3.3 Competitive Analysis</a>
+        </div>
+        <a href="#marketing-sales">4. Marketing and Sales Strategy</a>
+        <div class="indent-1">
+            <a href="#pricing-strategy">4.1 Pricing Strategy</a>
+            <a href="#sales-channels">4.2 Sales Channels</a>
+            <a href="#marketing-channels">4.3 Marketing Channels</a>
+        </div>
+        <a href="#products-services">5. Products or Services</a>
+        <a href="#operations-management">6. Operations and Management</a>
+        <a href="#financial-plan">7. Financial Plan</a>
+        <a href="#appendix">8. Appendix</a>
+    </div>
+
+    <div class="section" id="executive-summary">
+        <h1 class="editable">1. EXECUTIVE SUMMARY</h1>
+        
+        <div id="business-overview">
+            <h2 class="editable">1.1 Business Overview</h2>
+            <ul class="editable">
+                <li><strong>Business Name:</strong> Reid's Drop</li>
+                <li><strong>Umbrella Company:</strong> Tui & Tide Beverages LTD</li>
+                <li><strong>Business Structure:</strong> Limited Liability Company (LLC) with Co-Ownership</li>
+                <li><strong>Industry:</strong> Craft Beer and Flavored Lager Production</li>
+            </ul>
+            
+            <h3 class="editable">Sales Pitch</h3>
+            <div class="indent-1">
+                <p class="editable">Are you tired of the same old boring, bland-tasting beer? Reid's Drop incorporates a multitude of cultures and centuries of beer-making techniques and innovations to create the smoothest and crispest beer on the market.</p>
+            </div>
+            
+            <h3 class="editable">Business Development Strategy</h3>
+            <div class="indent-1">
+                <ul class="editable">
+                    <li>Start with small batches for friends and family testing and review</li>
+                    <li>Expand to offering samples to strangers for broader feedback</li>
+                    <li>Obtain proper licensing and regulatory compliance</li>
+                    <li>Begin sales at farmers markets to establish market presence</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="key-personnel">
+            <h2 class="editable">1.2 Key Personnel</h2>
+            <div class="indent-1">
+                <h3 class="editable">Founders</h3>
+                <ul class="editable">
+                    <li>Bruce Reid</li>
+                    <li>Mackenzie Reid</li>
+                    <li>Tomoki Huskinson</li>
+                </ul>
+                
+                <h3 class="editable">Key Stakeholders</h3>
+                <ul class="editable">
+                    <li>Bruce Reid (Primary Stakeholder)</li>
+                    <li>Potential Investors: Bruce Reid and/or Robb Huskinson</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="mission-vision">
+            <h2 class="editable">1.3 Mission & Vision</h2>
+            <div class="indent-1">
+                <h3 class="editable">Mission Statement</h3>
+                <p class="editable">To provide an exceptionally refreshing alternative to mundane, bland beers and lagers.</p>
+                
+                <h3 class="editable">Business Description</h3>
+                <p class="editable">Tui & Tide Beverages LTD serves as the umbrella company for Reid's Drop. Reid's Drop is a specialized business that focuses on craft beer and flavored lagers. Created by students for students, Reid's Drop aims to introduce the target market to the world of craft beer and flavored lager without the bitter, earthy taste of classic lagers.</p>
+            </div>
+        </div>
+
+        <div id="selling-positions">
+            <h2 class="editable">1.4 Potential Selling Positions</h2>
+            <div class="indent-1">
+                <h3 class="editable">Primary Venues</h3>
+                <ul class="editable">
+                    <li><strong>Bar101:</strong> Student-owned and focused bar selling various affordable drinks to students (open Wednesday, Friday, Saturday, and Sundays preceding public holidays)</li>
+                    <li><strong>Student Halls:</strong> Ideal selling position given co-owners' current living situation; residents frequent Wednesday, Friday, and Saturday outings</li>
+                    <li><strong>Shadows:</strong> Student bar allowing word-of-mouth marketing among student demographic</li>
+                </ul>
+                
+                <h3 class="editable">Expansion Venues</h3>
+                <ul class="editable">
+                    <li><strong>Music Festivals:</strong> Large demographic with mature taste preferences (ideal for IPA enthusiasts)</li>
+                    <li><strong>Golf Courses:</strong> Premium market segment</li>
+                    <li><strong>Retirement Homes:</strong> Specialized market with specific preferences</li>
+                    <li><strong>Reggae/Hippie Vibe Festivals:</strong> Cultural alignment with brand values</li>
+                </ul>
+                
+                <h3 class="editable">Major Retail Opportunities</h3>
+                <ul class="editable">
+                    <li><strong>Liquor Stores:</strong> Enable mass selling with additional packaging requirements (6-packs, 12-packs)</li>
+                    <li><strong>Supermarkets:</strong> Cheap mass sales potential but challenging entry requirements and extreme restrictions</li>
+                    <li><strong>Private Sales:</strong> Office functions and house parties</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="target-market">
+            <h2 class="editable">1.5 Target Market</h2>
+            <div class="indent-1">
+                <p class="editable"><strong>Primary Demographic:</strong> University students ages 18-30 who may not appreciate the taste of classic lagers but prefer flavored lagers or craft beers.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="company-description">
+        <h1 class="editable">2. COMPANY DESCRIPTION</h1>
+        
+        <div id="legal-structure">
+            <h2 class="editable">2.1 Legal Structure and Ownership</h2>
+            <div class="indent-1">
+                <ul class="editable">
+                    <li><strong>Structure:</strong> Limited Liability Company (LLC)</li>
+                    <li><strong>Ownership Split:</strong> 50/50 between Mackenzie Reid and Tomoki Huskinson</li>
+                </ul>
+                
+                <h3 class="editable">LLC Operational Framework</h3>
+                <div class="indent-1">
+                    <h4 class="editable">Ownership Structure</h4>
+                    <ul class="editable">
+                        <li>LLCs do not issue shares; owners are called members with percentage-based membership interests</li>
+                        <li>Ownership percentages can be based on contributions (money, assets, time) or agreed-upon arrangements</li>
+                    </ul>
+                    
+                    <h4 class="editable">Management Style</h4>
+                    <ul class="editable">
+                        <li><strong>Member-Managed LLC:</strong> All members involved in business operations with voting power based on ownership percentage</li>
+                        <li><strong>Manager-Managed LLC:</strong> Members choose managers for daily operations; members vote only on major decisions</li>
+                    </ul>
+                    
+                    <h4 class="editable">Decision-Making Framework</h4>
+                    <ul class="editable">
+                        <li>Majority vote required for large decisions (branding, partnerships, etc.)</li>
+                        <li>2/3 majority decision threshold for significant operational changes</li>
+                        <li>Operating Agreement controls decision-making authority and voting requirements</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="business-stage">
+            <h2 class="editable">2.2 Current Business Stage</h2>
+            <div class="indent-1">
+                <ul class="editable">
+                    <li><strong>Current Stage:</strong> Research & Development / Startup Phase</li>
+                    <li><strong>Long-Term Vision:</strong> Distribution across all sales channels including bars, alcohol stores, and supermarkets throughout New Zealand</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="unique-value">
+            <h2 class="editable">2.3 Unique Value Proposition</h2>
+            <div class="indent-1">
+                <ul class="editable">
+                    <li>Provision of flavored IPAs targeting students and young adults</li>
+                    <li>Cultural integration of centuries-old brewing techniques with modern preferences</li>
+                    <li>Student-focused brand created by students for authentic market understanding</li>
+                    <li>Introduction to craft beer without traditional bitter, earthy taste barriers</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="market-research">
+        <h1 class="editable">3. MARKET RESEARCH</h1>
+        
+        <div id="manufacturing-partners">
+            <h2 class="editable">3.1 Potential Manufacturing Partners</h2>
+            <div class="indent-1">
+                <h3 class="editable">Brewery Contact Strategy</h3>
+                <p class="editable">Professional email template developed for brewery partnership inquiries:</p>
+                
+                <div class="indent-1">
+                    <p class="editable"><strong>Subject:</strong> Enquiry Regarding Brewing Services for Craft Beer/IPAs</p>
+                    <p class="editable"><strong>Key Information Requested:</strong></p>
+                    <ul class="editable">
+                        <li>Possibility of custom batch collaboration</li>
+                        <li>Minimum and average batch sizes (in litres)</li>
+                        <li>Estimated pricing for minimum batch production</li>
+                        <li>Additional requirements (lead times, recipe development, licensing)</li>
+                    </ul>
+                </div>
+                
+                <h3 class="editable">Target Breweries for Partnership</h3>
+                <div class="indent-1">
+                    <ul class="editable">
+                        <li><strong>Sawmill Brewery:</strong> brewer@sawmillbrewery.co.nz</li>
+                        <li><strong>Hallertau Brewery:</strong> orders@hallertau.co.nz</li>
+                        <li><strong>McLeod's Brewery:</strong> Via website contact form</li>
+                        <li><strong>Bach Brewing:</strong> hello@bachbrewing.co.nz</li>
+                        <li><strong>Rudi's Beer:</strong> Via website contact form</li>
+                    </ul>
+                    <p class="editable"><em>Note: Responses pending from all contacted breweries</em></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="industry-overview">
+            <h2 class="editable">3.2 Industry Overview</h2>
+            <div class="indent-1">
+                <h3 class="editable">Market Segments</h3>
+                <ul class="editable">
+                    <li><strong>Primary Target:</strong> Older generation with established taste preferences</li>
+                    <li><strong>Geographic Focus:</strong> New Zealand market with potential for expansion</li>
+                    <li><strong>Regulatory Environment:</strong> Comprehensive licensing and compliance requirements</li>
+                </ul>
+                
+                <h3 class="editable">Market Entry Barriers</h3>
+                <ul class="editable">
+                    <li><strong>Financial:</strong> Significant startup costs for equipment and licensing</li>
+                    <li><strong>Partnership Requirements:</strong> Need for established brewery relationships</li>
+                    <li><strong>Legal Compliance:</strong> Complex regulatory framework for alcohol production and distribution</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="competitive-analysis">
+            <h2 class="editable">3.3 Competitive Analysis</h2>
+            <div class="indent-1">
+                <h3 class="editable">Key Competitors Overview</h3>
+                <p class="editable">Comprehensive analysis of major market competitors including:</p>
+                
+                <div class="indent-1">
+                    <h4 class="editable">International Brands</h4>
+                    <ul class="editable">
+                        <li><strong>Heineken:</strong> Premium international positioning</li>
+                        <li><strong>Export:</strong> Local heritage brand</li>
+                    </ul>
+                    
+                    <h4 class="editable">Domestic Craft Brands</h4>
+                    <ul class="editable">
+                        <li><strong>Monteith's Range:</strong> Radler, Summer Ale, Black varieties</li>
+                        <li><strong>Speights Summit:</strong> Low-carb lager with lime variant</li>
+                        <li><strong>Tui's:</strong> Traditional New Zealand brand</li>
+                    </ul>
+                    
+                    <h4 class="editable">Specialty/Craft Producers</h4>
+                    <ul class="editable">
+                        <li><strong>QBrew Manuka Honey Lager:</strong> Premium local ingredient focus</li>
+                        <li><strong>Panhead:</strong> Craft beer positioning</li>
+                        <li><strong>Parrot Dog:</strong> Boutique craft brewery</li>
+                    </ul>
+                </div>
+                
+                <h3 class="editable">Competitive Positioning Strategy</h3>
+                <div class="indent-1">
+                    <ul class="editable">
+                        <li>Market differentiation through student-focused flavored options</li>
+                        <li>Premium positioning without traditional taste barriers</li>
+                        <li>Cultural authenticity through student-created brand identity</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <div class="section" id="marketing-sales">
+        <h1 class="editable">4. MARKETING AND SALES STRATEGY</h1>
+        
+        <div id="pricing-strategy">
+            <h2 class="editable">4.1 Pricing Strategy</h2>
+            <div class="indent-1">
+                <p class="editable">Based on a production cost of $2.00 per bottle, the following pricing structure has been developed:</p>
+                
+                <h3 class="editable">Retail Pricing Structure</h3>
+                <table class="editable">
+                    <thead>
+                        <tr>
+                            <th>Bottles</th>
+                            <th>Retail Price</th>
+                            <th>Cost</th>
+                            <th>Profit</th>
+                            <th>Retail Margin %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>$5.50</td>
+                            <td>$2.00</td>
+                            <td>$3.50</td>
+                            <td>63.6%</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>$9.50</td>
+                            <td>$4.00</td>
+                            <td>$5.50</td>
+                            <td>57.9%</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>$16.99</td>
+                            <td>$8.00</td>
+                            <td>$8.99</td>
+                            <td>52.9%</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>$24.99</td>
+                            <td>$12.00</td>
+                            <td>$12.99</td>
+                            <td>52.0%</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>$45.00</td>
+                            <td>$24.00</td>
+                            <td>$21.00</td>
+                            <td>46.7%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="editable">Wholesale Pricing Structure</h3>
+                <table class="editable">
+                    <thead>
+                        <tr>
+                            <th>Bottles</th>
+                            <th>Wholesale Price</th>
+                            <th>Cost</th>
+                            <th>Profit</th>
+                            <th>Wholesale Margin %</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>$3.58</td>
+                            <td>$2.00</td>
+                            <td>$1.58</td>
+                            <td>44.1%</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>$6.18</td>
+                            <td>$4.00</td>
+                            <td>$2.18</td>
+                            <td>35.3%</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>$11.04</td>
+                            <td>$8.00</td>
+                            <td>$3.04</td>
+                            <td>27.5%</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>$16.24</td>
+                            <td>$12.00</td>
+                            <td>$4.24</td>
+                            <td>26.1%</td>
+                        </tr>
+                        <tr>
+                            <td>12</td>
+                            <td>$29.25</td>
+                            <td>$24.00</td>
+                            <td>$5.25</td>
+                            <td>17.9%</td>
+                        </tr>
+                        <tr>
+                            <td>24</td>
+                            <td>$58.49</td>
+                            <td>$48.00</td>
+                            <td>$10.49</td>
+                            <td>17.9%</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="editable">Volume Discount Structure</h3>
+                <table class="editable">
+                    <thead>
+                        <tr>
+                            <th>Order Size (1 carton = 24)</th>
+                            <th>Discount</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1–9 cartons</td>
+                            <td>Base wholesale price</td>
+                            <td>Standard pricing</td>
+                        </tr>
+                        <tr>
+                            <td>10–24 cartons (1 pallet approx.)</td>
+                            <td>5% off</td>
+                            <td>Medium retailers, bars</td>
+                        </tr>
+                        <tr>
+                            <td>25–49 cartons</td>
+                            <td>7.5% off</td>
+                            <td>Larger stores or chains</td>
+                        </tr>
+                        <tr>
+                            <td>50+ cartons (2+ pallets)</td>
+                            <td>10–12% off</td>
+                            <td>High-volume or national distributors</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h3 class="editable">Packaging Strategy</h3>
+                <ul class="editable">
+                    <li>Consider phasing out 24-pack option due to slower sales and limited demand</li>
+                    <li>Focus on single, 4-pack, 6-pack, and 12-pack retail options</li>
+                    <li>Explore canned options for cost efficiency and reduced shipping weight</li>
+                    <li>Maintain single bottle option for premium positioning and trial purchases</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="sales-channels">
+            <h2 class="editable">4.2 Sales Channels</h2>
+            <div class="indent-1">
+                <h3 class="editable">Phase 1: Direct Sales</h3>
+                <ul class="editable">
+                    <li><strong>Social Media Sales:</strong> Instagram and Snapchat direct sales to university students</li>
+                    <li><strong>Student Halls:</strong> Direct sales in common areas during peak social nights</li>
+                    <li><strong>Farmers Markets:</strong> Weekend stall for local community engagement</li>
+                </ul>
+                
+                <h3 class="editable">Phase 2: Retail Partnerships</h3>
+                <ul class="editable">
+                    <li><strong>Liquor Stores:</strong> Local independent retailers</li>
+                    <li><strong>Small Supermarkets:</strong> Neighborhood stores with flexible inventory</li>
+                    <li><strong>Specialty Beverage Shops:</strong> Craft beer focused retailers</li>
+                </ul>
+                
+                <h3 class="editable">Phase 3: Bar and Hospitality</h3>
+                <ul class="editable">
+                    <li><strong>Bar101:</strong> Primary student bar partnership</li>
+                    <li><strong>Shadows:</strong> Secondary student venue</li>
+                    <li><strong>Local Pubs:</strong> Expansion to general hospitality market</li>
+                </ul>
+                
+                <h3 class="editable">Phase 4: Online Distribution</h3>
+                <ul class="editable">
+                    <li><strong>Company Website:</strong> Direct-to-consumer online sales</li>
+                    <li><strong>Delivery Platforms:</strong> Integration with alcohol delivery services</li>
+                    <li><strong>Subscription Model:</strong> Regular delivery service for loyal customers</li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="marketing-channels">
+            <h2 class="editable">4.3 Marketing Channels</h2>
+            <div class="indent-1">
+                <h3 class="editable">Big Hairy Audacious Goal (BHAG)</h3>
+                <p class="editable"><strong>Primary Goal:</strong> Get Reid's Drop featured on multiple billboards around Auckland CBD</p>
+                
+                <h3 class="editable">Branding Strategy</h3>
+                <ul class="editable">
+                    <li>Simple but memorable brand image with recognizable colors and objects</li>
+                    <li>Homey, approachable feel that creates emotional connection</li>
+                    <li>Student-authentic messaging and visual identity</li>
+                </ul>
+                
+                <h3 class="editable">Digital Marketing Channels</h3>
+                <ul class="editable">
+                    <li><strong>Social Media Advertising:</strong> Instagram, Facebook, and YouTube campaigns</li>
+                    <li><strong>Influencer Partnerships:</strong> Club and bar page promotions</li>
+                    <li><strong>Viral Marketing:</strong> Attention-grabbing stunts (skydiving, motorsports partnerships)</li>
+                    <li><strong>Content Marketing:</strong> Behind-the-scenes brewing content</li>
+                </ul>
+                
+                <h3 class="editable">Traditional Marketing</h3>
+                <ul class="editable">
+                    <li><strong>Event Marketing:</strong> Taste testing at street events and festivals</li>
+                    <li><strong>Promotional Materials:</strong> Posters and merchandise at clubs and bars</li>
+                    <li><strong>Farmers Market Presence:</strong> Direct customer engagement and sampling</li>
+                    <li><strong>Billboard Advertising:</strong> High-visibility CBD locations (long-term goal)</li>
+                </ul>
+                
+                <h3 class="editable">Partnership Marketing</h3>
+                <ul class="editable">
+                    <li><strong>YouTube Collaborations:</strong> Reviews from channels like Cold Ones</li>
+                    <li><strong>Bar Partnerships:</strong> Co-branded events and promotions</li>
+                    <li><strong>Festival Sponsorships:</strong> Music and cultural events alignment</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="products-services">
+        <h1 class="editable">5. PRODUCTS OR SERVICES</h1>
+        
+        <div class="indent-1">
+            <h2 class="editable">5.1 Product Description</h2>
+            <p class="editable">Reid's Drop specializes in craft beer and flavored lagers designed specifically for the student market. Our products bridge the gap between traditional lagers and craft beers, offering approachable flavors without the bitter, earthy taste that often deters younger consumers.</p>
+            
+            <h2 class="editable">5.2 Key Features and Benefits</h2>
+            <ul class="editable">
+                <li><strong>Smooth and Crisp Taste:</strong> Incorporates multiple cultural brewing techniques for optimal flavor</li>
+                <li><strong>Student-Focused Flavors:</strong> Designed to appeal to 18-30 age demographic</li>
+                <li><strong>Premium Quality:</strong> Craft brewing standards with accessible pricing</li>
+                <li><strong>Cultural Integration:</strong> Centuries of beer-making traditions modernized for contemporary palates</li>
+            </ul>
+            
+            <h2 class="editable">5.3 Development Stage</h2>
+            <p class="editable"><strong>Current Phase:</strong> Research & Development with small batch testing among friends and family</p>
+            <p class="editable"><strong>Next Steps:</strong> Expand testing to broader demographic, obtain licensing, and begin farmers market sales</p>
+            
+            <h2 class="editable">5.4 Package Design Considerations</h2>
+            <div class="indent-1">
+                <h3 class="editable">Bottle Cap Options</h3>
+                <ul class="editable">
+                    <li><strong>Twist-off Caps:</strong> More expensive but offer customer convenience</li>
+                    <li><strong>Pop-off Caps:</strong> Traditional, cost-effective option widely accepted for beer</li>
+                    <li><strong>Recommendation:</strong> Start with pop-off caps to minimize costs, upgrade to twist-off as scale increases</li>
+                </ul>
+            </div>
+            
+            <h2 class="editable">5.5 Future Product Lines</h2>
+            <ul class="editable">
+                <li><strong>Canned Varieties:</strong> Cost-effective, lightweight option for broader distribution</li>
+                <li><strong>Seasonal Flavors:</strong> Limited edition varieties for different times of year</li>
+                <li><strong>Premium Line:</strong> Higher-end craft options for mature market segment</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="operations-management">
+        <h1 class="editable">6. OPERATIONS AND MANAGEMENT</h1>
+        
+        <div class="indent-1">
+            <h2 class="editable">6.1 Organizational Structure</h2>
+            <div class="indent-1">
+                <h3 class="editable">Management Team</h3>
+                <ul class="editable">
+                    <li><strong>Mackenzie Reid:</strong> Co-Owner (50% LLC membership interest)</li>
+                    <li><strong>Tomoki Huskinson:</strong> Co-Owner (50% LLC membership interest)</li>
+                    <li><strong>Bruce Reid:</strong> Primary Stakeholder and Advisor</li>
+                </ul>
+                
+                <h3 class="editable">Decision-Making Framework</h3>
+                <ul class="editable">
+                    <li><strong>Daily Operations:</strong> Collaborative management between co-owners</li>
+                    <li><strong>Major Decisions:</strong> Require majority vote (branding, partnerships, etc.)</li>
+                    <li><strong>Significant Changes:</strong> Require 2/3 majority decision threshold</li>
+                </ul>
+            </div>
+            
+            <h2 class="editable">6.2 Operational Plan</h2>
+            <div class="indent-1">
+                <h3 class="editable">Production Partnership Model</h3>
+                <p class="editable">Reid's Drop will operate through partnerships with established breweries rather than maintaining our own production facilities. This approach reduces startup costs and leverages existing expertise.</p>
+                
+                <h3 class="editable">Quality Control Process</h3>
+                <ul class="editable">
+                    <li><strong>Recipe Development:</strong> Collaborative process with brewery partners</li>
+                    <li><strong>Batch Testing:</strong> Small-scale trials before full production</li>
+                    <li><strong>Feedback Integration:</strong> Continuous improvement based on customer input</li>
+                    <li><strong>Consistency Monitoring:</strong> Regular quality checks across all batches</li>
+                </ul>
+                
+                <h3 class="editable">Supply Chain Management</h3>
+                <ul class="editable">
+                    <li><strong>Brewery Partnerships:</strong> Multiple suppliers to ensure reliability</li>
+                    <li><strong>Inventory Management:</strong> Just-in-time approach to minimize storage costs</li>
+                    <li><strong>Distribution Network:</strong> Graduated expansion from local to regional</li>
+                </ul>
+            </div>
+            
+            <h2 class="editable">6.3 Technology and Tools</h2>
+            <ul class="editable">
+                <li><strong>Social Media Management:</strong> Instagram, Facebook, and Snapchat for sales and marketing</li>
+                <li><strong>Inventory Tracking:</strong> Simple spreadsheet-based system initially</li>
+                <li><strong>Customer Relationship Management:</strong> Direct communication through social platforms</li>
+                <li><strong>Financial Management:</strong> Basic accounting software for tracking expenses and revenue</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="section" id="financial-plan">
+        <h1 class="editable">7. FINANCIAL PLAN</h1>
+        
+        <div class="indent-1">
+            <h2 class="editable">7.1 Revenue Model</h2>
+            <p class="editable">Reid's Drop operates on a multi-channel revenue model with varying profit margins based on sales channel and volume.</p>
+            
+            <h2 class="editable">7.2 Startup Costs</h2>
+            <ul class="editable">
+                <li><strong>Licensing and Legal:</strong> [To be determined based on regulatory requirements]</li>
+                <li><strong>Initial Batch Production:</strong> [Dependent on brewery partnership terms]</li>
+                <li><strong>Branding and Marketing:</strong> [Initial logo design, basic marketing materials]</li>
+                <li><strong>Working Capital:</strong> [Funds for initial inventory and operational expenses]</li>
+            </ul>
+            
+            <h2 class="editable">7.3 Break-Even Analysis</h2>
+            <p class="editable">Based on current pricing structure, break-even analysis will be completed once:</p>
+            <ul class="editable">
+                <li>Brewery partnership costs are confirmed</li>
+                <li>Licensing fees are determined</li>
+                <li>Initial production volume is established</li>
+            </ul>
+            
+            <h2 class="editable">7.4 Funding Requirements</h2>
+            <div class="indent-1">
+                <h3 class="editable">Potential Investors</h3>
+                <ul class="editable">
+                    <li><strong>Bruce Reid:</strong> Primary stakeholder and potential investor</li>
+                    <li><strong>Robb Huskinson:</strong> Secondary potential investor</li>
+                </ul>
+                
+                <h3 class="editable">Investment Use</h3>
+                <ul class="editable">
+                    <li>Initial production runs and inventory</li>
+                    <li>Licensing and regulatory compliance</li>
+                    <li>Marketing and brand development</li>
+                    <li>Working capital for operations</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="section" id="appendix">
+        <h1 class="editable">8. APPENDIX</h1>
+        
+        <div class="indent-1">
+            <h2 class="editable">8.1 Brewery Partnership Communications</h2>
+            <p class="editable">Professional email template for brewery inquiries has been developed and sent to the following potential partners:</p>
+            
+            <ul class="editable">
+                <li><strong>Sawmill Brewery:</strong> brewer@sawmillbrewery.co.nz (Response pending)</li>
+                <li><strong>Hallertau Brewery:</strong> orders@hallertau.co.nz (Response pending)</li>
+                <li><strong>McLeod's Brewery:</strong> Contact via website form (Response pending)</li>
+                <li><strong>Bach Brewing:</strong> hello@bachbrewing.co.nz (Response pending)</li>
+                <li><strong>Rudi's Beer:</strong> Contact via website form (Response pending)</li>
+            </ul>
+            
+            <h2 class="editable">8.2 Legal Structure Documentation</h2>
+            <p class="editable">LLC operating agreement to be drafted covering:</p>
+            <ul class="editable">
+                <li>50/50 ownership split between Mackenzie Reid and Tomoki Huskinson</li>
+                <li>Decision-making authority and voting requirements</li>
+                <li>Profit and loss distribution</li>
+                <li>Member responsibilities and obligations</li>
+            </ul>
+            
+            <h2 class="editable">8.3 Market Research References</h2>
+            <p class="editable">Competitive analysis data collected for major market players including Heineken, Export, Monteith's varieties, Speights Summit, Tui's, QBrew, Panhead, and Parrot Dog.</p>
+            
+            <h2 class="editable">8.4 Additional Documentation Required</h2>
+            <ul class="editable">
+                <li>Detailed financial projections once production costs are confirmed</li>
+                <li>Product development timeline and milestones</li>
+                <li>Regulatory compliance checklist and requirements</li>
+                <li>Customer testimonials from initial taste testing</li>
+                <li>Partnership agreements with breweries and distributors</li>
+            </ul>
+        </div>
+    </div>
+    <div class="split-notice">
+        ⚠️ THIS IS WHERE YOU PASTE THE SECOND HALF OF THE CODE ⚠️<br>
+        Replace this entire div with the remaining sections and JavaScript
+    </div>
+
+    <script>
+        // JavaScript for editing functionality
+        let editMode = false;
+        const STORAGE_KEY = 'reids_drop_business_plan_editable';
+        
+        function toggleEdit() {
+            editMode = !editMode;
+            const editables = document.querySelectorAll('.editable');
+            const status = document.getElementById('status');
+            
+            editables.forEach(el => {
+                el.contentEditable = editMode;
+                el.style.cursor = editMode ? 'text' : 'default';
+            });
+            
+            status.textContent = `Edit mode: ${editMode ? 'ON' : 'OFF'}`;
+            
+            if (editMode) {
+                showNotification('✏️ Edit mode enabled. Click on any text to edit.', 'success');
+            } else {
+                showNotification('👁️ Edit mode disabled. Changes preserved.', 'info');
+            }
+        }
+        
+        function saveChanges() {
+            const data = {};
+            const editables = document.querySelectorAll('.editable');
+            
+            editables.forEach((el, index) => {
+                const identifier = el.id || `element_${index}`;
+                data[identifier] = {
+                    innerHTML: el.innerHTML,
+                    tagName: el.tagName,
+                    className: el.className
+                };
+            });
+            
+            const saveData = {
+                data: data,
+                timestamp: new Date().toISOString(),
+                version: '2.0',
+                editMode: editMode
+            };
+            
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(saveData));
+                showNotification('💾 Changes saved successfully!', 'success');
+            } catch (error) {
+                showNotification('❌ Error saving changes. Storage may be full.', 'error');
+                console.error('Save error:', error);
+            }
+        }
+        
+        function loadSaved() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (!saved) {
+                showNotification('⚠️ No saved data found.', 'warning');
+                return;
+            }
+            
+            try {
+                const parsed = JSON.parse(saved);
+                const editables = document.querySelectorAll('.editable');
+                
+                editables.forEach((el, index) => {
+                    const identifier = el.id || `element_${index}`;
+                    const savedData = parsed.data[identifier];
+                    if (savedData && savedData.innerHTML) {
+                        el.innerHTML = savedData.innerHTML;
+                    }
+                });
+                
+                const saveDate = new Date(parsed.timestamp).toLocaleString();
+                showNotification(`📂 Data loaded from ${saveDate}`, 'success');
+            } catch (error) {
+                showNotification('❌ Error loading saved data.', 'error');
+                console.error('Load error:', error);
+            }
+        }
+        
+        function exportHTML() {
+            // Create a clean copy of the document
+            const docClone = document.cloneNode(true);
+            
+            // Remove edit controls from the clone
+            const editControls = docClone.querySelector('.edit-controls');
+            if (editControls) {
+                editControls.remove();
+            }
+            
+            // Remove instructions from the clone
+            const instructions = docClone.querySelector('.instructions');
+            if (instructions) {
+                instructions.remove();
+            }
+            
+            // Remove split notice from the clone
+            const splitNotice = docClone.querySelector('.split-notice');
+            if (splitNotice) {
+                splitNotice.remove();
+            }
+            
+            // Ensure all editable elements are set to non-editable in export
+            const editables = docClone.querySelectorAll('.editable');
+            editables.forEach(el => {
+                el.contentEditable = 'false';
+                el.style.cursor = 'default';
+            });
+            
+            // Create the HTML content
+            const htmlContent = `<!DOCTYPE html>\n${docClone.documentElement.outerHTML}`;
+            
+            // Create and download the file
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reids_drop_business_plan_edited_${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('📤 Document exported successfully!', 'success');
+        }
+        
+        function printDocument() {
+            // Temporarily hide edit controls
+            const editControls = document.querySelector('.edit-controls');
+            const instructions = document.querySelector('.instructions');
+            const splitNotice = document.querySelector('.split-notice');
+            
+            const originalDisplay = {
+                controls: editControls ? editControls.style.display : '',
+                instructions: instructions ? instructions.style.display : '',
+                splitNotice: splitNotice ? splitNotice.style.display : ''
+            };
+            
+            if (editControls) editControls.style.display = 'none';
+            if (instructions) instructions.style.display = 'none';
+            if (splitNotice) splitNotice.style.display = 'none';
+            
+            // Print
+            window.print();
+            
+            // Restore original display
+            setTimeout(() => {
+                if (editControls) editControls.style.display = originalDisplay.controls;
+                if (instructions) instructions.style.display = originalDisplay.instructions;
+                if (splitNotice) split
+            }
+            )
+            
+                // JavaScript for editing functionality
+        let editMode = false;
+        const STORAGE_KEY = 'reids_drop_business_plan_editable';
+        
+        function toggleEdit() {
+            editMode = !editMode;
+            const editables = document.querySelectorAll('.editable');
+            const status = document.getElementById('status');
+            
+            editables.forEach(el => {
+                el.contentEditable = editMode;
+                el.style.cursor = editMode ? 'text' : 'default';
+                
+                if (editMode) {
+                    el.addEventListener('input', handleInput);
+                    el.addEventListener('keydown', handleKeydown);
+                } else {
+                    el.removeEventListener('input', handleInput);
+                    el.removeEventListener('keydown', handleKeydown);
+                }
+            });
+            
+            status.textContent = `Edit mode: ${editMode ? 'ON' : 'OFF'}`;
+            
+            if (editMode) {
+                showNotification('✏️ Edit mode enabled. Click on any text to edit.', 'success');
+            } else {
+                showNotification('👁️ Edit mode disabled. Changes preserved.', 'info');
+            }
+        }
+        
+        function handleInput(e) {
+            // Auto-save functionality could be added here
+            console.log('Content changed in:', e.target);
+        }
+        
+        function handleKeydown(e) {
+            // Handle special keys like Enter, Tab, etc.
+            if (e.key === 'Enter' && e.target.tagName === 'P') {
+                // Allow natural paragraph breaks
+                return true;
+            }
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                document.execCommand('insertText', false, '    ');
+            }
+        }
+        
+        function saveChanges() {
+            const data = {};
+            const editables = document.querySelectorAll('.editable');
+            
+            editables.forEach((el, index) => {
+                const identifier = el.id || el.className + '_' + index;
+                data[identifier] = {
+                    innerHTML: el.innerHTML,
+                    tagName: el.tagName,
+                    className: el.className
+                };
+            });
+            
+            const saveData = {
+                data: data,
+                timestamp: new Date().toISOString(),
+                version: '2.0',
+                editMode: editMode
+            };
+            
+            try {
+                // Use in-memory storage instead of localStorage for Claude.ai compatibility
+                window.savedBusinessPlanData = saveData;
+                showNotification('💾 Changes saved successfully!', 'success');
+            } catch (error) {
+                showNotification('❌ Error saving changes.', 'error');
+                console.error('Save error:', error);
+            }
+        }
+        
+        function loadSaved() {
+            const saved = window.savedBusinessPlanData;
+            if (!saved) {
+                showNotification('⚠️ No saved data found.', 'warning');
+                return;
+            }
+            
+            try {
+                const editables = document.querySelectorAll('.editable');
+                
+                editables.forEach((el, index) => {
+                    const identifier = el.id || el.className + '_' + index;
+                    const savedData = saved.data[identifier];
+                    if (savedData && savedData.innerHTML) {
+                        el.innerHTML = savedData.innerHTML;
+                    }
+                });
+                
+                const saveDate = new Date(saved.timestamp).toLocaleString();
+                showNotification(`📂 Data loaded from ${saveDate}`, 'success');
+            } catch (error) {
+                showNotification('❌ Error loading saved data.', 'error');
+                console.error('Load error:', error);
+            }
+        }
+        
+        function exportHTML() {
+            // Create a clean copy of the document
+            const docClone = document.cloneNode(true);
+            
+            // Remove edit controls from the clone
+            const editControls = docClone.querySelector('.edit-controls');
+            if (editControls) {
+                editControls.remove();
+            }
+            
+            // Remove instructions from the clone
+            const instructions = docClone.querySelector('.instructions');
+            if (instructions) {
+                instructions.remove();
+            }
+            
+            // Ensure all editable elements are set to non-editable in export
+            const editables = docClone.querySelectorAll('.editable');
+            editables.forEach(el => {
+                el.contentEditable = 'false';
+                el.style.cursor = 'default';
+            });
+            
+            // Create the HTML content
+            const htmlContent = `<!DOCTYPE html>\n${docClone.documentElement.outerHTML}`;
+            
+            // Create and download the file
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `reids_drop_business_plan_edited_${new Date().toISOString().split('T')[0]}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('📤 Document exported successfully!', 'success');
+        }
+        
+        function printDocument() {
+            // Temporarily hide edit controls
+            const editControls = document.querySelector('.edit-controls');
+            const instructions = document.querySelector('.instructions');
+            
+            const originalDisplay = {
+                controls: editControls ? editControls.style.display : '',
+                instructions: instructions ? instructions.style.display : ''
+            };
+            
+            if (editControls) editControls.style.display = 'none';
+            if (instructions) instructions.style.display = 'none';
+            
+            // Print
+            window.print();
+            
+            // Restore original display
+            setTimeout(() => {
+                if (editControls) editControls.style.display = originalDisplay.controls;
+                if (instructions) instructions.style.display = originalDisplay.instructions;
+            }, 100);
+            
+            showNotification('🖨️ Print dialog opened', 'info');
+        }
+        
+        function showNotification(message, type = 'info') {
+            // Remove existing notifications
+            const existing = document.querySelectorAll('.notification');
+            existing.forEach(n => n.remove());
+            
+            // Create new notification
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            // Show notification
+            setTimeout(() => {
+                notification.classList.add('show');
+            }, 100);
+            
+            // Hide notification after 4 seconds
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.remove();
+                    }
+                }, 300);
+            }, 4000);
+        }
+        
+        // Initialize the document
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Reid\'s Drop Business Plan loaded successfully');
+            showNotification('📋 Business plan loaded. Click "Toggle Edit Mode" to start editing.', 'info');
+        });
+        
+        // Add keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey || e.metaKey) {
+                switch(e.key) {
+                    case 's':
+                        e.preventDefault();
+                        saveChanges();
+                        break;
+                    case 'e':
+                        e.preventDefault();
+                        toggleEdit();
+                        break;
+                    case 'p':
+                        if (e.shiftKey) {
+                            e.preventDefault();
+                            printDocument();
+                        }
+                        break;
+                }
+            }
+        });
+    }     
+    </script>
+</body>
+</html>
